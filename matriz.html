@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<!-- Massively by HTML5 UP | html5up.net | @ajlkn — CCA 3.0 license -->
+<html lang="es">
+<head>
+<title>Matriz y Conclusión</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+<style>
+  pre code { font-size: 0.8rem; line-height: 1.55; }
+  .tag { display:inline-block; font-family: "Source Sans Pro", sans-serif; font-size:0.7rem; font-weight:900; letter-spacing:0.075em; text-transform:uppercase; padding:0.15rem 0.6rem; border-radius:3px; margin-right:0.4rem; vertical-align:middle; }
+  .tag.critico { background:#e44c65; color:#fff; } .tag.alto { background:#18bfef; color:#fff; }
+  .tag.medio { background:#f2b33d; color:#212931; } .tag.bajo { background:#c6ccd2; color:#212931; }
+  .stats { display:flex; flex-wrap:wrap; gap:1.5rem; justify-content:center; margin: 0 0 1rem 0; list-style:none; padding:0; }
+  .stats li { text-align:center; min-width:7.5rem; padding:0; }
+  .stats strong { display:block; font-family:"Merriweather", Georgia, serif; font-size:2.4rem; line-height:1.1; color:#212931; }
+  .stats span { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.075em; color:#7f888f; }
+  .change { border-top: solid 2px #eeeeee; padding-top: 2.5rem; margin-top: 2.5rem; }
+  .change h3 .num { color:#18bfef; margin-right:0.35rem; }
+  .verdict { font-size:0.85rem; color:#7f888f; margin-bottom:1rem; }
+  .toc { columns: 2; column-gap: 2rem; } @media (max-width: 736px) { .toc { columns: 1; } }
+  .table-wrapper code { white-space: nowrap; }
+  #intro h1 { font-size: 4rem; } @media (max-width: 736px) { #intro h1 { font-size: 2.25rem; } }
+  .logo { text-transform:none !important; }
+  h1, h2, h3 { overflow-wrap: anywhere; }
+  @media (max-width: 480px) { .post header.major h1, .post header.major h2 { font-size: 1.55rem; } .post header.major p { text-align:center; } #main p { text-align:left; } }
+</style>
+
+</head>
+<body class="is-preload">
+<div id="wrapper">
+
+<header id="header"><a href="index.html" class="logo">SNAI · UZDI</a></header>
+<nav id="nav"><ul class="links"><li><a href="index.html">Inicio</a></li>
+<li><a href="modelo.html">Modelo de datos v8</a></li>
+<li><a href="cambios.html">Cambios propuestos</a></li>
+<li class="active"><a href="matriz.html">Matriz y conclusión</a></li></ul>
+<ul class="icons"><li><a href="modelo.html" class="icon solid fa-database"><span class="label">Modelo</span></a></li></ul></nav>
+<div id="main">
+
+<section class="post">
+<header class="major">
+<span class="date">Secciones 3 y 4 de la propuesta</span>
+<h1>Matriz de prioridad <br />e impacto</h1>
+<p>Los cambios ordenados por impacto arquitectónico, con los componentes involucrados <br />y su alineación con las directrices.</p>
+</header>
+<ul class="stats">
+<li><strong>1</strong><span>crítico</span></li><li><strong>3</strong><span>alto</span></li><li><strong>4</strong><span>medio</span></li><li><strong>2</strong><span>bajo</span></li>
+</ul>
+<div class="table-wrapper"><table class="alt"><thead><tr><th>N.º</th><th>Elemento de cambio</th><th>Impacto</th><th>Componentes involucrados</th><th>Alineación con directrices</th></tr></thead><tbody><tr><td><a href="cambios.html#c8">8</a></td><td>Nueva tabla <code>medida_expediente</code> con <code>orden</code></td><td><span class="tag critico">Crítico</span></td><td>DDL v8, ExpedientesModule, MedidasModule, UI</td><td>Mandatorio legal (CONA) y directriz del ingeniero</td></tr>
+<tr><td><a href="cambios.html#c10">10</a></td><td>Incorporación universal de <code>estado CHAR(1)</code></td><td><span class="tag alto">Alto</span></td><td>DDL v8, todas las entidades TypeORM, DTOs</td><td>Estandariza borrado lógico y soporte BooleanVF</td></tr>
+<tr><td><a href="cambios.html#c4">4</a></td><td>Articulación activa de <code>accn</code>, <code>prms</code> y <code>sesn</code></td><td><span class="tag alto">Alto</span></td><td>AuthModule, SecurityModule, Guards RBAC</td><td>No se borran tablas; se aprovechan en BD</td></tr>
+<tr><td><a href="cambios.html#c5">5</a></td><td>Sincronización <code>SET LOCAL app.usuario_id</code> en triggers</td><td><span class="tag alto">Alto</span></td><td>Transacciones NestJS, seguridad.historial</td><td>Logs centralizados estrictamente en PostgreSQL</td></tr>
+<tr><td><a href="cambios.html#c9">9</a></td><td>Mantener campo <code>cedula</code> para cédula o pasaporte</td><td><span class="tag medio">Medio</span></td><td>DTOs de validación, AdolescentesModule</td><td>Directriz del docente; simplifica el modelo</td></tr>
+<tr><td><a href="cambios.html#c7">7</a></td><td>Mapeo explícito en TypeORM (<code>prsn</code>, <code>tipo_persona</code>)</td><td><span class="tag medio">Medio</span></td><td>Entidades TypeORM del módulo users</td><td>Evita renombrar tablas físicas en el DDL</td></tr>
+<tr><td><a href="cambios.html#c1">1</a></td><td>Normalizar redacción de requerimientos funcionales</td><td><span class="tag medio">Medio</span></td><td>Documentación de casos de uso / RFs</td><td>Adherencia a IEEE 830</td></tr>
+<tr><td><a href="cambios.html#c2">2</a></td><td>Precedencia de perfiles/roles antes que usuarios</td><td><span class="tag medio">Medio</span></td><td>Casos de uso, seeders de inicialización</td><td>Coherencia con integridad referencial</td></tr>
+<tr><td><a href="cambios.html#c3">3</a></td><td>Mapeo plano de <code>prflpdre</code> en <code>seguridad.prfl</code></td><td><span class="tag bajo">Bajo</span></td><td>Entidad PerfilEntity</td><td>Evita sobrecarga de árboles recursivos</td></tr>
+<tr><td><a href="cambios.html#c6">6</a></td><td>Corrección semántica en diagrama nivel 0</td><td><span class="tag bajo">Bajo</span></td><td>Diagramas DFD / diagrama de contexto</td><td>Distingue input operativo de reporte</td></tr></tbody></table></div>
+<p><em>La matriz del documento original prioriza 10 de los 12 cambios; los cambios 11 (dimensionamiento de tipos) y 12 (identificadores entre comillas) se tratan como ajustes de mantenimiento.</em></p>
+
+<h2>Conclusión y recomendación</h2>
+<p>La propuesta v2.0 equilibra las buenas prácticas de ingeniería de software con las directrices de la cátedra y de la contraparte técnica institucional:</p>
+<div class="row">
+<div class="col-6 col-12-small">
+<h4>Estabilidad del esquema físico</h4><p>Se conserva la totalidad de tablas y esquemas, sin eliminaciones destructivas.</p>
+<h4>Trazabilidad dentro de PostgreSQL</h4><p>La inyección del usuario logueado en cada transacción permite que los triggers de <code>historial</code> y el registro de <code>sesn</code> operen con precisión.</p>
+</div>
+<div class="col-6 col-12-small">
+<h4>Adaptación legal al CONA</h4><p><code>medida_expediente</code> con <code>orden</code> obligatorio gestiona medidas simultáneas o consecutivas.</p>
+<h4>Identificación flexible</h4><p>La columna <code>cedula</code> recibe de forma ordenada cédulas y pasaportes.</p>
+</div>
+</div>
+<blockquote>Se recomienda la aprobación formal del presente documento para proceder con la generación del script de actualización DDL (versión 8) y la actualización de entidades en el repositorio de backend NestJS.</blockquote>
+</section>
+
+<footer><div class="pagination"><a href="cambios.html" class="previous">Anterior</a><a href="index.html" class="page">1</a><a href="modelo.html" class="page">2</a><a href="cambios.html" class="page">3</a><a href="matriz.html" class="page active">4</a></div></footer>
+</div>
+
+<footer id="footer">
+  <section>
+    <h3>Propuesta técnica de refactorización</h3>
+    <p>Documento formal v2.0 (actualizado según directrices de cátedra) con su script DDL PostgreSQL v8 unificado. Se recomienda su aprobación para generar el script v8 y actualizar las entidades del backend NestJS.</p>
+    <ul class="actions"><li><a href="cambios.html" class="button">Ver los 12 cambios</a></li></ul>
+  </section>
+  <section class="split contact">
+    <section class="alt"><h3>Proyecto</h3><p>Sistema de Gestión Integral UZDI <br />SNAI · PUCE · Octubre 2026</p></section>
+    <section><h3>Equipo Backend</h3><p>Gabriel Aguinaga, Joselyn Cadena, Alejandro Flores, Joan Santacruz y Paúl Rosero</p></section>
+    <section><h3>Dirigido a</h3><p>Ing. Guido Ochoa (docente responsable), contraparte técnica SNAI y equipo de desarrollo</p></section>
+    <section><h3>Stack</h3><p>NestJS 11 · TypeORM · PostgreSQL 14+</p></section>
+  </section>
+</footer>
+<div id="copyright"><ul><li>&copy; Equipo Backend UZDI · PUCE</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul></div>
+
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

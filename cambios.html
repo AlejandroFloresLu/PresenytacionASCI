@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<!-- Massively by HTML5 UP | html5up.net | @ajlkn — CCA 3.0 license -->
+<html lang="es">
+<head>
+<title>Cambios Propuestos</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+<style>
+  pre code { font-size: 0.8rem; line-height: 1.55; }
+  .tag { display:inline-block; font-family: "Source Sans Pro", sans-serif; font-size:0.7rem; font-weight:900; letter-spacing:0.075em; text-transform:uppercase; padding:0.15rem 0.6rem; border-radius:3px; margin-right:0.4rem; vertical-align:middle; }
+  .tag.critico { background:#e44c65; color:#fff; } .tag.alto { background:#18bfef; color:#fff; }
+  .tag.medio { background:#f2b33d; color:#212931; } .tag.bajo { background:#c6ccd2; color:#212931; }
+  .stats { display:flex; flex-wrap:wrap; gap:1.5rem; justify-content:center; margin: 0 0 1rem 0; list-style:none; padding:0; }
+  .stats li { text-align:center; min-width:7.5rem; padding:0; }
+  .stats strong { display:block; font-family:"Merriweather", Georgia, serif; font-size:2.4rem; line-height:1.1; color:#212931; }
+  .stats span { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.075em; color:#7f888f; }
+  .change { border-top: solid 2px #eeeeee; padding-top: 2.5rem; margin-top: 2.5rem; }
+  .change h3 .num { color:#18bfef; margin-right:0.35rem; }
+  .verdict { font-size:0.85rem; color:#7f888f; margin-bottom:1rem; }
+  .toc { columns: 2; column-gap: 2rem; } @media (max-width: 736px) { .toc { columns: 1; } }
+  .table-wrapper code { white-space: nowrap; }
+  #intro h1 { font-size: 4rem; } @media (max-width: 736px) { #intro h1 { font-size: 2.25rem; } }
+  .logo { text-transform:none !important; }
+  h1, h2, h3 { overflow-wrap: anywhere; }
+  @media (max-width: 480px) { .post header.major h1, .post header.major h2 { font-size: 1.55rem; } .post header.major p { text-align:center; } #main p { text-align:left; } }
+</style>
+
+</head>
+<body class="is-preload">
+<div id="wrapper">
+
+<header id="header"><a href="index.html" class="logo">SNAI · UZDI</a></header>
+<nav id="nav"><ul class="links"><li><a href="index.html">Inicio</a></li>
+<li><a href="modelo.html">Modelo de datos v8</a></li>
+<li class="active"><a href="cambios.html">Cambios propuestos</a></li>
+<li><a href="matriz.html">Matriz y conclusión</a></li></ul>
+<ul class="icons"><li><a href="modelo.html" class="icon solid fa-database"><span class="label">Modelo</span></a></li></ul></nav>
+<div id="main">
+
+<section class="post">
+<header class="major">
+<span class="date">Sección 2 de la propuesta</span>
+<h1>Doce cambios <br />propuestos</h1>
+<p>Cada punto incluye su dictamen, la justificación técnica y la estrategia de solución en NestJS o en el DDL.</p>
+</header>
+<ul class="toc"><li><a href="#c1">1. Depuración de nomenclatura en requerimientos funcionales</a></li>
+<li><a href="#c2">2. Roles/perfiles antes que usuarios (RF-12 y RF-01)</a></li>
+<li><a href="#c3">3. Jerarquía de perfiles en <code>seguridad.prfl</code></a></li>
+<li><a href="#c4">4. Articulación activa de <code>prfl</code>, <code>accn</code>, <code>prms</code> y <code>sesn</code></a></li>
+<li><a href="#c5">5. Auditoría transaccional centralizada en PostgreSQL</a></li>
+<li><a href="#c6">6. Corrección semántica en el diagrama de nivel 0</a></li>
+<li><a href="#c7">7. Mapeo ORM entre base de datos y backend NestJS</a></li>
+<li><a href="#c8">8. Tabla detalle <code>medida_expediente</code> con <code>orden</code> obligatorio</a></li>
+<li><a href="#c9">9. Preservación del campo <code>cedula</code> (cédula o pasaporte)</a></li>
+<li><a href="#c10">10. Atributo <code>estado</code> en todas las tablas</a></li>
+<li><a href="#c11">11. Dimensionamiento de tipos de datos en DDL y DTOs</a></li>
+<li><a href="#c12">12. Identificadores entre comillas (<code>"fcCrea"</code>, <code>"fcMod"</code>)</a></li></ul>
+<div class="change" id="c1">
+<h3><span class="num">01</span>Depuración de nomenclatura en requerimientos funcionales</h3>
+<p class="verdict"><span class="tag medio">Medio</span>Aprobado · Buenas prácticas IEEE 830 / ISO/IEC/IEEE 29148</p>
+<p><strong>Justificación.</strong> Sustituir frases de navegación como «Ingreso a gestión de…» por verbos de proceso de negocio. Bajo IEEE 830 un requerimiento especifica una funcionalidad transaccional (alta, baja, modificación, consulta, validación), no el acceso a una pantalla.</p>
+<p><strong>Estrategia.</strong> RF-01 «Administración y control de usuarios» · RF-02 «Gestión sociodemográfica de adolescentes» · RF-03 «Gestión procesal de expedientes judiciales» · RF-05 «Gestión de catálogo de medidas socioeducativas».</p>
+
+</div><div class="change" id="c2">
+<h3><span class="num">02</span>Roles/perfiles antes que usuarios (RF-12 y RF-01)</h3>
+<p class="verdict"><span class="tag medio">Medio</span>Aprobado · Integridad de dominio y datos</p>
+<p><strong>Justificación.</strong> En <code>seguridad.prsn</code> la vinculación a un perfil/cargo (<code>tppr_id</code>) es una clave foránea: un usuario no puede existir sin un perfil asignable. Definir usuarios antes que perfiles altera el orden de seeders, migraciones y formularios.</p>
+<p><strong>Estrategia.</strong> Reordenar casos de uso y seeders: primero parametrizar el catálogo de cargos/roles; luego el alta de cuentas vinculadas a un rol existente.</p>
+
+</div><div class="change" id="c3">
+<h3><span class="num">03</span>Jerarquía de perfiles en <code>seguridad.prfl</code></h3>
+<p class="verdict"><span class="tag bajo">Bajo</span>Aprobado · Simplificación de entidades ORM</p>
+<p><strong>Justificación.</strong> El catálogo de 7 perfiles del SNAI es lineal. Forzar <code>@TreeParent()</code>/<code>@TreeChildren()</code> sobrecarga las consultas con CTE recursivos innecesarios; <code>prflpdre</code> se mantiene como entero nullable.</p>
+<p><strong>Estrategia.</strong> Mapear la columna como atributo simple en <code>PerfilEntity</code>.</p>
+<pre><code>@Column({ name: &#x27;prflpdre&#x27;, type: &#x27;int4&#x27;, nullable: true })
+perfilPadreId: number | null;</code></pre>
+</div><div class="change" id="c4">
+<h3><span class="num">04</span>Articulación activa de <code>prfl</code>, <code>accn</code>, <code>prms</code> y <code>sesn</code></h3>
+<p class="verdict"><span class="tag alto">Alto</span>Alineado con la directriz: no se borra ninguna tabla</p>
+<p><strong>Justificación.</strong> El diseño original concibió una matriz RBAC granular en base de datos. Si el backend sólo valida en código, estas tablas quedan desconectadas; deben aprovecharse para autorización dinámica y auditoría de sesiones.</p>
+<p><strong>Estrategia.</strong> <strong>Sesión:</strong> en <code>AuthService</code>, tras emitir el JWT, insertar en <code>sesn</code> (<code>sesnfcin = NOW()</code>); en logout, <code>sesnfcfn = NOW()</code>. <strong>Permisos:</strong> un <code>PermissionsGuard</code> que verifique la acción autorizada en <code>prms</code>.</p>
+
+</div><div class="change" id="c5">
+<h3><span class="num">05</span>Auditoría transaccional centralizada en PostgreSQL</h3>
+<p class="verdict"><span class="tag alto">Alto</span>Alineado con la directriz: los logs van dentro de la base</p>
+<p><strong>Justificación.</strong> El trigger <code>fn_registrar_historial()</code> lee <code>app.usuario_id</code>. Si el backend no lo inyecta en cada escritura, se registra <code>COALESCE(v_usuario_id, 0)</code> como usuario cero y se pierde la trazabilidad exigida por el SNAI.</p>
+<p><strong>Estrategia.</strong> Inyectar la variable de sesión en cada transacción con <code>QueryRunner</code> de TypeORM.</p>
+<pre><code>await queryRunner.query(`SET LOCAL app.usuario_id = &#x27;${usuarioId}&#x27;`);
+// Ejecutar INSERT / UPDATE / DELETE</code></pre>
+</div><div class="change" id="c6">
+<h3><span class="num">06</span>Corrección semántica en el diagrama de nivel 0</h3>
+<p class="verdict"><span class="tag bajo">Bajo</span>Aprobado · Rigor en análisis y diseño</p>
+<p><strong>Justificación.</strong> Los flujos de actores operativos hacia el sistema son entradas (inputs), no «Reportes». Un reporte es una salida analítica consolidada (RF-16).</p>
+<p><strong>Estrategia.</strong> Flechas entrantes: registro de adolescente, ingreso de expedientes, asistencia a talleres. Flechas salientes: reportes estadísticos, matrices de cumplimiento de medidas, expedientes consolidados.</p>
+
+</div><div class="change" id="c7">
+<h3><span class="num">07</span>Mapeo ORM entre base de datos y backend NestJS</h3>
+<p class="verdict"><span class="tag medio">Medio</span>Aprobado · Coherencia de código y respeto al DDL físico</p>
+<p><strong>Justificación.</strong> El DDL usa nombres abreviados (<code>prsn</code>, <code>prsnnmbr</code>, <code>tppr_id</code>) y el backend conceptos de dominio (<code>User</code>, <code>/api/v1/users</code>). La discrepancia se resuelve en los decoradores, sin renombrar tablas.</p>
+<p><strong>Estrategia.</strong> Configurar el mapeo explícito en las entidades TypeORM.</p>
+<pre><code>@Entity({ name: &#x27;prsn&#x27;, schema: &#x27;seguridad&#x27; })
+export class UsuarioEntity {
+  @PrimaryGeneratedColumn({ name: &#x27;prsn_id&#x27; }) id: number;
+  @Column({ name: &#x27;prsnnmbr&#x27;, length: 31 }) nombre: string;
+  @Column({ name: &#x27;prsnapll&#x27;, length: 31 }) apellido: string;
+  @Column({ name: &#x27;prsnmail&#x27;, length: 63 }) email: string;
+  @Column({ name: &#x27;prsnpass&#x27;, length: 63, select: false }) password: string;
+}</code></pre>
+</div><div class="change" id="c8">
+<h3><span class="num">08</span>Tabla detalle <code>medida_expediente</code> con <code>orden</code> obligatorio</h3>
+<p class="verdict"><span class="tag critico">Crítico</span>Mandatorio por normativa legal (CONA)</p>
+<p><strong>Justificación.</strong> Según el CONA (Art. 369, 370 y 378) los jueces pueden imponer medidas socioeducativas simultáneas o sucesivas. <code>orden</code> tipifica la precedencia (medida 1, 2, 3…), y las fechas y el estado de cumplimiento pertenecen a cada medida, no al expediente.</p>
+<p><strong>Estrategia.</strong> Crear la tabla en el esquema <code>adolescente</code>, con índices y triggers, y retirar <code>mdso_id</code> directo de <code>expediente</code>.</p>
+<pre><code>CREATE TABLE adolescente.medida_expediente (
+  mdex_id SERIAL PRIMARY KEY,
+  expe_id INT4 NOT NULL,
+  mdso_id INT4 NOT NULL,
+  orden INT4 NOT NULL,
+  fecha_inicio DATE NOT NULL,
+  fecha_fin DATE,
+  estado_cumplimiento VARCHAR(50) NOT NULL DEFAULT &#x27;En proceso&#x27;,
+  estado CHAR(1) NOT NULL DEFAULT &#x27;V&#x27;,
+  CONSTRAINT chk_mdex_orden CHECK (orden &gt; 0),
+  CONSTRAINT chk_mdex_fechas CHECK (fecha_fin IS NULL OR fecha_fin &gt;= fecha_inicio)
+);</code></pre>
+</div><div class="change" id="c9">
+<h3><span class="num">09</span>Preservación del campo <code>cedula</code> (cédula o pasaporte)</h3>
+<p class="verdict"><span class="tag medio">Medio</span>Aprobado · Alineado con la directriz del docente</p>
+<p><strong>Justificación.</strong> <code>VARCHAR(20)</code> cubre los 10 dígitos de la cédula ecuatoriana y los pasaportes alfanuméricos (6–12 caracteres) sin tablas accesorias: menos joins y compatibilidad total.</p>
+<p><strong>Estrategia.</strong> Flexibilizar la validación en <code>CreateAdolescenteDto</code>.</p>
+<pre><code>@IsNotEmpty({ message: &#x27;El documento de identificación (cédula o pasaporte) es obligatorio&#x27; })
+@IsString()
+@Length(3, 20)
+@Matches(/^[a-zA-Z0-9]+$/)
+cedula: string;</code></pre>
+</div><div class="change" id="c10">
+<h3><span class="num">10</span>Atributo <code>estado</code> en todas las tablas</h3>
+<p class="verdict"><span class="tag alto">Alto</span>Aprobado · Requerimiento institucional y borrado lógico</p>
+<p><strong>Justificación.</strong> Los expedientes judiciales juveniles no deben eliminarse físicamente por auditoría y archivo legal. El estándar <code>'V'/'F'</code> permite que el transformador <code>BooleanVF</code> opere igual en todos los módulos.</p>
+<p><strong>Estrategia.</strong> Agregar la columna a todas las tablas que no la tenían.</p>
+<pre><code>ALTER TABLE adolescente.adolescente
+  ADD COLUMN IF NOT EXISTS estado CHAR(1) NOT NULL DEFAULT &#x27;V&#x27;
+  CHECK (estado IN (&#x27;V&#x27;, &#x27;F&#x27;));</code></pre>
+</div><div class="change" id="c11">
+<h3><span class="num">11</span>Dimensionamiento de tipos de datos en DDL y DTOs</h3>
+<p class="verdict"><span class="tag medio">Medio</span>Aprobado · Integridad y consistencia</p>
+<p><strong>Justificación.</strong> <code>prsnpass VARCHAR(63)</code> aloja con holgura los hashes bcrypt de 60 caracteres. Normalizar <code>VARCHAR</code> con longitud definida frente a <code>TEXT</code> optimiza memoria.</p>
+<p><strong>Estrategia.</strong> Validar en el DTO de creación de usuario que la contraseña tenga entre 8 y 63 caracteres antes del cifrado.</p>
+
+</div><div class="change" id="c12">
+<h3><span class="num">12</span>Identificadores entre comillas (<code>"fcCrea"</code>, <code>"fcMod"</code>)</h3>
+<p class="verdict"><span class="tag bajo">Bajo</span>Aprobado · Mantenibilidad ORM</p>
+<p><strong>Justificación.</strong> PostgreSQL convierte identificadores a minúsculas salvo que vayan entre comillas dobles; TypeORM puede fallar si no se preserva el nombre exacto.</p>
+<p><strong>Estrategia.</strong> Mapear explícitamente las columnas de auditoría en todas las entidades.</p>
+<pre><code>@CreateDateColumn({ name: &#x27;fcCrea&#x27;, type: &#x27;timestamp&#x27; }) fechaCreacion: Date;
+@UpdateDateColumn({ name: &#x27;fcMod&#x27;, type: &#x27;timestamp&#x27; }) fechaModificacion: Date;</code></pre>
+</div>
+</section>
+
+<footer><div class="pagination"><a href="modelo.html" class="previous">Anterior</a><a href="index.html" class="page">1</a><a href="modelo.html" class="page">2</a><a href="cambios.html" class="page active">3</a><a href="matriz.html" class="page">4</a><a href="matriz.html" class="next">Siguiente</a></div></footer>
+</div>
+
+<footer id="footer">
+  <section>
+    <h3>Propuesta técnica de refactorización</h3>
+    <p>Documento formal v2.0 (actualizado según directrices de cátedra) con su script DDL PostgreSQL v8 unificado. Se recomienda su aprobación para generar el script v8 y actualizar las entidades del backend NestJS.</p>
+    <ul class="actions"><li><a href="cambios.html" class="button">Ver los 12 cambios</a></li></ul>
+  </section>
+  <section class="split contact">
+    <section class="alt"><h3>Proyecto</h3><p>Sistema de Gestión Integral UZDI <br />SNAI · PUCE · Octubre 2026</p></section>
+    <section><h3>Equipo Backend</h3><p>Gabriel Aguinaga, Joselyn Cadena, Alejandro Flores, Joan Santacruz y Paúl Rosero</p></section>
+    <section><h3>Dirigido a</h3><p>Ing. Guido Ochoa (docente responsable), contraparte técnica SNAI y equipo de desarrollo</p></section>
+    <section><h3>Stack</h3><p>NestJS 11 · TypeORM · PostgreSQL 14+</p></section>
+  </section>
+</footer>
+<div id="copyright"><ul><li>&copy; Equipo Backend UZDI · PUCE</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul></div>
+
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

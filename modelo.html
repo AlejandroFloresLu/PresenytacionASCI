@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<!-- Massively by HTML5 UP | html5up.net | @ajlkn — CCA 3.0 license -->
+<html lang="es">
+<head>
+<title>Modelo de Datos v8</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+<style>
+  pre code { font-size: 0.8rem; line-height: 1.55; }
+  .tag { display:inline-block; font-family: "Source Sans Pro", sans-serif; font-size:0.7rem; font-weight:900; letter-spacing:0.075em; text-transform:uppercase; padding:0.15rem 0.6rem; border-radius:3px; margin-right:0.4rem; vertical-align:middle; }
+  .tag.critico { background:#e44c65; color:#fff; } .tag.alto { background:#18bfef; color:#fff; }
+  .tag.medio { background:#f2b33d; color:#212931; } .tag.bajo { background:#c6ccd2; color:#212931; }
+  .stats { display:flex; flex-wrap:wrap; gap:1.5rem; justify-content:center; margin: 0 0 1rem 0; list-style:none; padding:0; }
+  .stats li { text-align:center; min-width:7.5rem; padding:0; }
+  .stats strong { display:block; font-family:"Merriweather", Georgia, serif; font-size:2.4rem; line-height:1.1; color:#212931; }
+  .stats span { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.075em; color:#7f888f; }
+  .change { border-top: solid 2px #eeeeee; padding-top: 2.5rem; margin-top: 2.5rem; }
+  .change h3 .num { color:#18bfef; margin-right:0.35rem; }
+  .verdict { font-size:0.85rem; color:#7f888f; margin-bottom:1rem; }
+  .toc { columns: 2; column-gap: 2rem; } @media (max-width: 736px) { .toc { columns: 1; } }
+  .table-wrapper code { white-space: nowrap; }
+  #intro h1 { font-size: 4rem; } @media (max-width: 736px) { #intro h1 { font-size: 2.25rem; } }
+  .logo { text-transform:none !important; }
+  h1, h2, h3 { overflow-wrap: anywhere; }
+  @media (max-width: 480px) { .post header.major h1, .post header.major h2 { font-size: 1.55rem; } .post header.major p { text-align:center; } #main p { text-align:left; } }
+</style>
+
+</head>
+<body class="is-preload">
+<div id="wrapper">
+
+<header id="header"><a href="index.html" class="logo">SNAI · UZDI</a></header>
+<nav id="nav"><ul class="links"><li><a href="index.html">Inicio</a></li>
+<li class="active"><a href="modelo.html">Modelo de datos v8</a></li>
+<li><a href="cambios.html">Cambios propuestos</a></li>
+<li><a href="matriz.html">Matriz y conclusión</a></li></ul>
+<ul class="icons"><li><a href="modelo.html" class="icon solid fa-database"><span class="label">Modelo</span></a></li></ul></nav>
+<div id="main">
+
+<section class="post">
+<header class="major">
+<span class="date">DDL PostgreSQL · Versión 8</span>
+<h1>Modelo de <br />datos v8</h1>
+<p>Script unificado para PostgreSQL 14+: seis esquemas, auditoría por triggers, índices de rendimiento <br />y catálogos base de parametrización inicial.</p>
+</header>
+
+<h2>Cambios respecto a la versión 7</h2>
+<ol>
+<li>Nueva tabla detalle <code>adolescente.medida_expediente</code> con el atributo obligatorio <code>orden</code>: una o más medidas por expediente, consecutivas o simultáneas según el CONA.</li>
+<li>Se desacopla <code>mdso_id</code> de <code>adolescente.expediente</code>; la relación pasa por <code>medida_expediente</code>. Se incorpora <code>numero_causa</code>.</li>
+<li>Se mantiene <code>cedula VARCHAR(20)</code> para cédula o pasaporte.</li>
+<li>Campo <code>estado CHAR(1) NOT NULL DEFAULT 'V'</code> con <code>CHECK ('V','F')</code> en todas las tablas.</li>
+<li>Se conservan todos los esquemas y tablas, incluidas <code>accn</code>, <code>prms</code>, <code>sesn</code> e <code>historial</code>.</li>
+</ol>
+
+<div class="image main"><img src="images/uzdi/medida-expediente.svg" alt="Relación expediente – medida_expediente – medida_socioeducativa" /></div>
+
+<h2>Tablas por esquema</h2>
+<h3 id="estructura_institucional">Estructura institucional <code>estructura_institucional</code></h3>
+<div class="table-wrapper"><table class="alt"><thead><tr><th>Tabla</th><th>PK</th><th>Campos clave</th><th>Relaciones</th></tr></thead><tbody><tr><td><code>provincia</code></td><td><code>prov_id</code></td><td>nombre (único)</td><td>—</td></tr>
+<tr><td><code>canton</code></td><td><code>cntn_id</code></td><td>nombre (único por provincia)</td><td>prov_id → provincia</td></tr>
+<tr><td><code>uzdi</code></td><td><code>uzdi_id</code></td><td>nombre, zona, dirección, teléfono, correo</td><td>cntn_id → canton</td></tr></tbody></table></div><h3 id="seguridad">Seguridad <code>seguridad</code></h3>
+<div class="table-wrapper"><table class="alt"><thead><tr><th>Tabla</th><th>PK</th><th>Campos clave</th><th>Relaciones</th></tr></thead><tbody><tr><td><code>prfl</code></td><td><code>prfl_id</code></td><td>prflcdgo, prflnmbr, prfldscr, prflpdre (nullable)</td><td>—</td></tr>
+<tr><td><code>accn</code></td><td><code>accn_id</code></td><td>accnnmbr, accndscr, accnaudt, ctrl_id, mdlo_id</td><td>—</td></tr>
+<tr><td><code>prms</code></td><td><code>prms_id</code></td><td>único (prfl_id, accn_id)</td><td>prfl_id → prfl · accn_id → accn</td></tr>
+<tr><td><code>tipo_persona</code></td><td><code>tppr_id</code></td><td>nombre (único)</td><td>—</td></tr>
+<tr><td><code>prsn</code></td><td><code>prsn_id</code></td><td>prsnnmbr, prsnapll, prsnsexo, prsnmail, prsnlogn (único), prsnpass</td><td>uzdi_id → uzdi · tppr_id → tipo_persona</td></tr>
+<tr><td><code>sesn</code></td><td><code>sesn_id</code></td><td>sesnfcin, sesnfcfn</td><td>prfl_id → prfl · prsn_id → prsn</td></tr>
+<tr><td><code>historial</code></td><td><code>hist_id</code></td><td>tabla_afectada, registro_id, usua_id, accion, estado_anterior, estado_nuevo</td><td>sin FK (inmutable)</td></tr></tbody></table></div><h3 id="adolescente">Adolescente <code>adolescente</code></h3>
+<div class="table-wrapper"><table class="alt"><thead><tr><th>Tabla</th><th>PK</th><th>Campos clave</th><th>Relaciones</th></tr></thead><tbody><tr><td><code>nacionalidad</code></td><td><code>nacn_id</code></td><td>nombre (único)</td><td>—</td></tr>
+<tr><td><code>estado_civil</code></td><td><code>etcv_id</code></td><td>nombre (único)</td><td>—</td></tr>
+<tr><td><code>etnia</code></td><td><code>etna_id</code></td><td>nombre (único)</td><td>—</td></tr>
+<tr><td><code>gdo</code></td><td><code>gdo_id</code></td><td>nombre (único)</td><td>—</td></tr>
+<tr><td><code>infraccion</code></td><td><code>infc_id</code></td><td>nombre, categoria, articulo_cona, descripcion</td><td>—</td></tr>
+<tr><td><code>medida_socioeducativa</code></td><td><code>mdso_id</code></td><td>nombre (único), duracion_meses &gt; 0</td><td>—</td></tr>
+<tr><td><code>adolescente</code></td><td><code>adlc_id</code></td><td>nombre, apellido, cedula (único), fecha_nac, sexo, hijos, reincide, fecha_ingr, hijoPpl</td><td>nacn_id, etcv_id, etna_id, cntn_id, gdo_id</td></tr>
+<tr><td><code>expediente</code></td><td><code>expe_id</code></td><td>numero_causa, estado_procesal, observaciones</td><td>adlc_id · uzdi_id · infc_id</td></tr>
+<tr><td><code>medida_expediente</code></td><td><code>mdex_id</code></td><td>orden &gt; 0, fecha_inicio, fecha_fin, estado_cumplimiento</td><td>expe_id → expediente · mdso_id → medida</td></tr></tbody></table></div><h3 id="contexto_familiar">Contexto familiar <code>contexto_familiar</code></h3>
+<div class="table-wrapper"><table class="alt"><thead><tr><th>Tabla</th><th>PK</th><th>Campos clave</th><th>Relaciones</th></tr></thead><tbody><tr><td><code>tipo_parentesco</code></td><td><code>tprt_id</code></td><td>nombre (único)</td><td>—</td></tr>
+<tr><td><code>representante</code></td><td><code>repr_id</code></td><td>nombre, apellido, cedula (único), teléfono, dirección</td><td>cntn_id → canton</td></tr>
+<tr><td><code>adolescente_representante</code></td><td><code>adre_id</code></td><td>es_referente, fecha_inicio, fecha_fin; único (adlc_id, repr_id)</td><td>adlc_id · repr_id · tprt_id</td></tr></tbody></table></div><h3 id="talleres_actividades">Talleres y actividades <code>talleres_actividades</code></h3>
+<div class="table-wrapper"><table class="alt"><thead><tr><th>Tabla</th><th>PK</th><th>Campos clave</th><th>Relaciones</th></tr></thead><tbody><tr><td><code>taller</code></td><td><code>tall_id</code></td><td>nombre, tema, objetivo, fecha, hora_inicio &lt; hora_fin, lugar</td><td>uzdi_id → uzdi · prsn_id → prsn</td></tr>
+<tr><td><code>asistencia_taller</code></td><td><code>asta_id</code></td><td>tipo_asistente ('adolescente' | 'representante'), asistio</td><td>tall_id · adlc_id o adre_id (exclusivo)</td></tr></tbody></table></div><h3 id="gestion_documental">Gestión documental <code>gestion_documental</code></h3>
+<div class="table-wrapper"><table class="alt"><thead><tr><th>Tabla</th><th>PK</th><th>Campos clave</th><th>Relaciones</th></tr></thead><tbody><tr><td><code>tipo_documento</code></td><td><code>tpdc_id</code></td><td>nombre (único), descripcion</td><td>—</td></tr>
+<tr><td><code>documento_expediente</code></td><td><code>dcex_id</code></td><td>es_habilitante, estado_tramite, numero_documento, fecha_documento, emisor</td><td>expe_id · prsn_id · tpdc_id</td></tr></tbody></table></div>
+
+<h2>Auditoría automática</h2>
+<p>Cada tabla operativa tiene dos triggers: <code>trg_fcmod_*</code> (BEFORE UPDATE, 24 tablas) actualiza la marca <code>"fcMod"</code>, y <code>trg_historial_*</code> (AFTER INSERT/UPDATE/DELETE, 25 tablas) escribe un evento inmutable en <code>seguridad.historial</code> con el estado anterior y el nuevo en JSON. El usuario responsable llega desde NestJS por variable de sesión:</p>
+<pre><code>v_usuario_id := NULLIF(current_setting(&#x27;app.usuario_id&#x27;, true), &#x27;&#x27;)::INT4;
+
+INSERT INTO seguridad.historial (tabla_afectada, registro_id, usua_id, fecha,
+                                 accion, estado_anterior, estado_nuevo, descripcion)
+VALUES (TG_TABLE_SCHEMA || &#x27;.&#x27; || TG_TABLE_NAME, COALESCE(v_registro_id, 0),
+        COALESCE(v_usuario_id, 0), NOW(), TG_OP,
+        to_jsonb(OLD)::TEXT, to_jsonb(NEW)::TEXT,
+        &#x27;Registro automático generado por trigger transaccional&#x27;);</code></pre>
+
+<h2>Estados controlados por CHECK</h2>
+<div class="table-wrapper"><table><thead><tr><th>Campo</th><th>Valores permitidos</th></tr></thead><tbody>
+<tr><td><code>expediente.estado_procesal</code></td><td>En proceso · Atraso · Incomparecencia · Concluido · Archivado</td></tr>
+<tr><td><code>medida_expediente.estado_cumplimiento</code></td><td>En proceso · Cumplida · Incumplida · Sustituida · Suspendida</td></tr>
+<tr><td><code>documento_expediente.estado_tramite</code></td><td>pendiente · recibido · verificado · no aplica · rechazado</td></tr>
+<tr><td><code>sexo</code> / <code>prsnsexo</code></td><td>M · F · O</td></tr>
+<tr><td><code>estado</code>, <code>reincide</code>, <code>hijoPpl</code>, <code>asistio</code>…</td><td>V · F (BooleanVF)</td></tr>
+</tbody></table></div>
+
+<h2>Catálogo base de perfiles</h2>
+<div class="table-wrapper"><table class="alt"><thead><tr><th>Código</th><th>Perfil</th><th>Alcance</th></tr></thead><tbody><tr><td><code>ADM</code></td><td>Administrador</td><td>Gestión total y administración del sistema</td></tr>
+<tr><td><code>CORD</code></td><td>Coordinador UZDI</td><td>Supervisión y control de expedientes zonales</td></tr>
+<tr><td><code>LEGAL</code></td><td>Profesional Legal</td><td>Gestión judicial, expedientes y medidas</td></tr>
+<tr><td><code>TSOC</code></td><td>Trabajador/a Social</td><td>Entorno familiar, visitas y representantes</td></tr>
+<tr><td><code>PSIC</code></td><td>Psicólogo/a</td><td>Seguimiento psicológico y fichas técnicas</td></tr>
+<tr><td><code>EDUC</code></td><td>Educador/a</td><td>Talleres formativos y asistencias grupales</td></tr>
+<tr><td><code>CONS</code></td><td>Consulta</td><td>Acceso de solo lectura para fiscalización</td></tr></tbody></table></div>
+<p>Otros catálogos sembrados: tipos de persona (Técnico, Coordinador, Administrativo, Director, Otro), 8 tipos de parentesco, 8 tipos de documento, 5 estados civiles y 6 etnias.</p>
+</section>
+
+<footer><div class="pagination"><a href="index.html" class="previous">Anterior</a><a href="index.html" class="page">1</a><a href="modelo.html" class="page active">2</a><a href="cambios.html" class="page">3</a><a href="matriz.html" class="page">4</a><a href="cambios.html" class="next">Siguiente</a></div></footer>
+</div>
+
+<footer id="footer">
+  <section>
+    <h3>Propuesta técnica de refactorización</h3>
+    <p>Documento formal v2.0 (actualizado según directrices de cátedra) con su script DDL PostgreSQL v8 unificado. Se recomienda su aprobación para generar el script v8 y actualizar las entidades del backend NestJS.</p>
+    <ul class="actions"><li><a href="cambios.html" class="button">Ver los 12 cambios</a></li></ul>
+  </section>
+  <section class="split contact">
+    <section class="alt"><h3>Proyecto</h3><p>Sistema de Gestión Integral UZDI <br />SNAI · PUCE · Octubre 2026</p></section>
+    <section><h3>Equipo Backend</h3><p>Gabriel Aguinaga, Joselyn Cadena, Alejandro Flores, Joan Santacruz y Paúl Rosero</p></section>
+    <section><h3>Dirigido a</h3><p>Ing. Guido Ochoa (docente responsable), contraparte técnica SNAI y equipo de desarrollo</p></section>
+    <section><h3>Stack</h3><p>NestJS 11 · TypeORM · PostgreSQL 14+</p></section>
+  </section>
+</footer>
+<div id="copyright"><ul><li>&copy; Equipo Backend UZDI · PUCE</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul></div>
+
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

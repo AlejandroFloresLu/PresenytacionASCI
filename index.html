@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<!-- Massively by HTML5 UP | html5up.net | @ajlkn — CCA 3.0 license -->
+<html lang="es">
+<head>
+<title>Sistema UZDI</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+<style>
+  pre code { font-size: 0.8rem; line-height: 1.55; }
+  .tag { display:inline-block; font-family: "Source Sans Pro", sans-serif; font-size:0.7rem; font-weight:900; letter-spacing:0.075em; text-transform:uppercase; padding:0.15rem 0.6rem; border-radius:3px; margin-right:0.4rem; vertical-align:middle; }
+  .tag.critico { background:#e44c65; color:#fff; } .tag.alto { background:#18bfef; color:#fff; }
+  .tag.medio { background:#f2b33d; color:#212931; } .tag.bajo { background:#c6ccd2; color:#212931; }
+  .stats { display:flex; flex-wrap:wrap; gap:1.5rem; justify-content:center; margin: 0 0 1rem 0; list-style:none; padding:0; }
+  .stats li { text-align:center; min-width:7.5rem; padding:0; }
+  .stats strong { display:block; font-family:"Merriweather", Georgia, serif; font-size:2.4rem; line-height:1.1; color:#212931; }
+  .stats span { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.075em; color:#7f888f; }
+  .change { border-top: solid 2px #eeeeee; padding-top: 2.5rem; margin-top: 2.5rem; }
+  .change h3 .num { color:#18bfef; margin-right:0.35rem; }
+  .verdict { font-size:0.85rem; color:#7f888f; margin-bottom:1rem; }
+  .toc { columns: 2; column-gap: 2rem; } @media (max-width: 736px) { .toc { columns: 1; } }
+  .table-wrapper code { white-space: nowrap; }
+  #intro h1 { font-size: 4rem; } @media (max-width: 736px) { #intro h1 { font-size: 2.25rem; } }
+  .logo { text-transform:none !important; }
+  h1, h2, h3 { overflow-wrap: anywhere; }
+  @media (max-width: 480px) { .post header.major h1, .post header.major h2 { font-size: 1.55rem; } .post header.major p { text-align:center; } #main p { text-align:left; } }
+</style>
+
+</head>
+<body class="is-preload">
+<div id="wrapper" class="fade-in">
+<div id="intro">
+<h1>Sistema de Gestión <br />Integral UZDI</h1>
+<p>Propuesta técnica de refactorización y auditoría arquitectónica del backend <br />NestJS 11 + TypeORM y del modelo relacional PostgreSQL (DDL v8) · SNAI – PUCE</p>
+<ul class="actions"><li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continuar</a></li></ul>
+</div>
+<header id="header"><a href="index.html" class="logo">SNAI · UZDI</a></header>
+<nav id="nav"><ul class="links"><li class="active"><a href="index.html">Inicio</a></li>
+<li><a href="modelo.html">Modelo de datos v8</a></li>
+<li><a href="cambios.html">Cambios propuestos</a></li>
+<li><a href="matriz.html">Matriz y conclusión</a></li></ul>
+<ul class="icons"><li><a href="modelo.html" class="icon solid fa-database"><span class="label">Modelo</span></a></li></ul></nav>
+<div id="main">
+
+<article class="post featured">
+<header class="major">
+<span class="date">Versión 2.0 · Octubre 2026</span>
+<h2><a href="modelo.html">Seis esquemas, <br />veintiséis tablas</a></h2>
+<p>La auditoría del backend y del modelo físico identificó 12 puntos de optimización para elevar la mantenibilidad, <br />
+robustez y coherencia del sistema, en estricto cumplimiento del Código Orgánico de la Niñez y Adolescencia (CONA).</p>
+</header>
+<ul class="stats">
+<li><strong>6</strong><span>esquemas</span></li>
+<li><strong>26</strong><span>tablas</span></li>
+<li><strong>30</strong><span>claves foráneas</span></li>
+<li><strong>29</strong><span>índices</span></li>
+<li><strong>49</strong><span>triggers</span></li>
+<li><strong>12</strong><span>cambios</span></li>
+</ul>
+<a href="modelo.html" class="image main"><img src="images/uzdi/overview.svg" alt="Relaciones entre los seis esquemas" /></a>
+<ul class="actions special"><li><a href="modelo.html" class="button large">Explorar el modelo</a></li></ul>
+</article>
+
+<section class="post">
+<header class="major"><h2>Directrices <br />institucionales</h2></header>
+<div class="row">
+<div class="col-6 col-12-small">
+<h4>1. Conservación estructural</h4><p>No se elimina ninguna tabla ni esquema existente (<code>accn</code>, <code>prms</code>, <code>sesn</code>, <code>historial</code>). La arquitectura multi-esquema está justificada institucionalmente.</p>
+<h4>2. Auditoría dentro de la base</h4><p>Auditoría transaccional y ciclo de vida de sesiones se gestionan en PostgreSQL mediante triggers, sin almacenamientos externos.</p>
+<h4>3. Tabla detalle <code>medida_expediente</code></h4><p>Con atributo obligatorio <code>orden</code>, permite asociar una o varias medidas a un expediente y su precedencia.</p>
+</div>
+<div class="col-6 col-12-small">
+<h4>4. Campo <code>cedula</code> preservado</h4><p><code>VARCHAR(20)</code> en <code>adolescente.adolescente</code> para registrar indistintamente cédulas ecuatorianas o pasaportes extranjeros.</p>
+<h4>5. Atributo <code>estado</code> universal</h4><p><code>CHAR(1)</code> con <code>CHECK ('V','F')</code> en todas las tablas: borrado lógico y compatibilidad con el transformador <code>BooleanVF</code>.</p>
+</div>
+</div>
+</section>
+
+<section class="posts">
+<article>
+<header><span class="date">Esquema</span><h2><a href="modelo.html#estructura_institucional">Estructura institucional</a></h2></header>
+<a href="modelo.html#estructura_institucional" class="image fit"><img src="images/uzdi/schema-estructura_institucional.svg" alt="Tablas del esquema estructura_institucional" /></a>
+<p>Provincias, cantones y las Unidades Zonales de Desarrollo Integral (UZDI) con su zona, dirección y contacto. Es la base territorial a la que se vinculan usuarios, adolescentes, expedientes y talleres.</p>
+<ul class="actions special"><li><a href="modelo.html#estructura_institucional" class="button">Ver tablas</a></li></ul>
+</article>
+<article>
+<header><span class="date">Esquema</span><h2><a href="modelo.html#seguridad">Seguridad</a></h2></header>
+<a href="modelo.html#seguridad" class="image fit"><img src="images/uzdi/schema-seguridad.svg" alt="Tablas del esquema seguridad" /></a>
+<p>Perfiles, acciones y permisos (matriz RBAC), usuarios del sistema, sesiones y la tabla inmutable de auditoría <code>historial</code>, alimentada por triggers.</p>
+<ul class="actions special"><li><a href="modelo.html#seguridad" class="button">Ver tablas</a></li></ul>
+</article>
+<article>
+<header><span class="date">Esquema</span><h2><a href="modelo.html#adolescente">Adolescente</a></h2></header>
+<a href="modelo.html#adolescente" class="image fit"><img src="images/uzdi/schema-adolescente.svg" alt="Tablas del esquema adolescente" /></a>
+<p>Ficha sociodemográfica, catálogos (nacionalidad, etnia, estado civil, GDO, infracciones, medidas), expediente judicial y la nueva tabla detalle <code>medida_expediente</code>.</p>
+<ul class="actions special"><li><a href="modelo.html#adolescente" class="button">Ver tablas</a></li></ul>
+</article>
+<article>
+<header><span class="date">Esquema</span><h2><a href="modelo.html#contexto_familiar">Contexto familiar</a></h2></header>
+<a href="modelo.html#contexto_familiar" class="image fit"><img src="images/uzdi/schema-contexto_familiar.svg" alt="Tablas del esquema contexto_familiar" /></a>
+<p>Representantes, tipos de parentesco y la relación adolescente–representante con referente, vigencia y fechas.</p>
+<ul class="actions special"><li><a href="modelo.html#contexto_familiar" class="button">Ver tablas</a></li></ul>
+</article>
+<article>
+<header><span class="date">Esquema</span><h2><a href="modelo.html#talleres_actividades">Talleres y actividades</a></h2></header>
+<a href="modelo.html#talleres_actividades" class="image fit"><img src="images/uzdi/schema-talleres_actividades.svg" alt="Tablas del esquema talleres_actividades" /></a>
+<p>Talleres formativos por UZDI con su facilitador, horario y lugar, y el registro de asistencia de adolescentes o representantes.</p>
+<ul class="actions special"><li><a href="modelo.html#talleres_actividades" class="button">Ver tablas</a></li></ul>
+</article>
+<article>
+<header><span class="date">Esquema</span><h2><a href="modelo.html#gestion_documental">Gestión documental</a></h2></header>
+<a href="modelo.html#gestion_documental" class="image fit"><img src="images/uzdi/schema-gestion_documental.svg" alt="Tablas del esquema gestion_documental" /></a>
+<p>Tipos de documento y documentos por expediente con su estado de trámite: pendiente, recibido, verificado, no aplica o rechazado.</p>
+<ul class="actions special"><li><a href="modelo.html#gestion_documental" class="button">Ver tablas</a></li></ul>
+</article>
+</section>
+
+<footer><div class="pagination"><a href="index.html" class="page active">1</a><a href="modelo.html" class="page">2</a><a href="cambios.html" class="page">3</a><a href="matriz.html" class="page">4</a><a href="modelo.html" class="next">Siguiente</a></div></footer>
+</div>
+
+<footer id="footer">
+  <section>
+    <h3>Propuesta técnica de refactorización</h3>
+    <p>Documento formal v2.0 (actualizado según directrices de cátedra) con su script DDL PostgreSQL v8 unificado. Se recomienda su aprobación para generar el script v8 y actualizar las entidades del backend NestJS.</p>
+    <ul class="actions"><li><a href="cambios.html" class="button">Ver los 12 cambios</a></li></ul>
+  </section>
+  <section class="split contact">
+    <section class="alt"><h3>Proyecto</h3><p>Sistema de Gestión Integral UZDI <br />SNAI · PUCE · Octubre 2026</p></section>
+    <section><h3>Equipo Backend</h3><p>Gabriel Aguinaga, Joselyn Cadena, Alejandro Flores, Joan Santacruz y Paúl Rosero</p></section>
+    <section><h3>Dirigido a</h3><p>Ing. Guido Ochoa (docente responsable), contraparte técnica SNAI y equipo de desarrollo</p></section>
+    <section><h3>Stack</h3><p>NestJS 11 · TypeORM · PostgreSQL 14+</p></section>
+  </section>
+</footer>
+<div id="copyright"><ul><li>&copy; Equipo Backend UZDI · PUCE</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul></div>
+
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
